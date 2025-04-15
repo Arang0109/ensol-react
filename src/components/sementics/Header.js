@@ -1,8 +1,8 @@
 import React from 'react';
-import { Container, Navbar, Nav, NavDropdown } from 'react-bootstrap';
+import { Container, Navbar, Nav, NavDropdown, Button, Form } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-export default function Headers() {
+export default function Headers({ theme, toggleTheme }) {
 	return(
 		<Navbar expand="lg" className="bg-body-tertiary">
       <Container>
@@ -28,7 +28,15 @@ export default function Headers() {
 							<NavDropdown.Item href="#action/3.6">측정가용점수</NavDropdown.Item>
             </NavDropdown>
           </Nav>
-					<Nav>
+					<Nav className="d-flex align-items-center gap-2">
+            <Form>
+              <Form.Check
+                type="switch"
+                id="custom-switch"
+                label={theme === 'dark' ? '☀️' : '🌙'}
+                onClick={toggleTheme}
+              />
+            </Form>
 						<Nav.Link href="#login">로그인</Nav.Link>
 					</Nav>
         </Navbar.Collapse>

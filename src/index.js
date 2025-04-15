@@ -3,9 +3,10 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import 'react-datepicker/dist/react-datepicker.css';
 import 'handsontable/styles/handsontable.min.css';
 import 'handsontable/styles/ht-theme-main.min.css';
+
 import { registerAllModules } from 'handsontable/registry';
 
 import { BrowserRouter } from 'react-router-dom';
