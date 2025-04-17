@@ -2,7 +2,11 @@ import React from 'react';
 import { Container, Navbar, Nav, NavDropdown, Button, Form } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-export default function Headers({ theme, toggleTheme }) {
+import { useTheme } from 'context/ThemeContext';
+
+export default function Headers() {
+  const { theme, toggleTheme } = useTheme();
+
 	return(
 		<Navbar expand="lg" className="bg-body-tertiary">
       <Container>

@@ -1,39 +1,57 @@
-// src/components/tables/CompanyTable.js
-import { HotTable } from '@handsontable/react-wrapper';
-import { useRef } from 'react';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import DataTable from 'react-data-table-component';
 
-export default function CompanyTable({ data, onDoubleClick }) {
-  const lastClickRef = useRef({ row: null, time: 0 });
+import { fetchCompanyList  } from 'api/managementApi';
+
+import { CustomButton } from 'components/buttons';
+
+import { CompanyCreateForm } from 'features/company';
+
+const columns = [
+	{
+		name: '측정대행 의뢰업체',
+		cell: row => (
+      <Link to={`/companies/${row.companyId}`} style={{ textDecoration: 'none' }}>
+        {row.companyName}
+      </Link>
+    ),
+    sortable: true
+	},
+	{ name: '대표자', selector: row => row.ceoName },
+  { name: '사업지 주소', selector: row => row.address },
+  { name: '사업자번호', selector: row => row.bizNumber },
+];
+
+export default function CompanyTable() {
+  const [showModal, setShowModal] = useState(false);
+  const [companies, setCompanies] = useState([]);
+
+  useEffect(() => {
+    fetchCompanyList()
+    .then(setCompanies)
+    .catch(console.error);
+  }, []);
+
+  const handleShowModal = () => {
+    setShowModal(true);
+  }
 
   return (
-    <HotTable
-      data={data}
-      stretchH="all"
-      readOnly={true}
-      columns={[
-        { data: 'companyId' },
-        { data: 'companyName' },
-        { data: 'ceoName' },
-        { data: 'bizNumber' },
-        { data: 'address' },
-        { data: 'regDate' }
-      ]}
-      colHeaders={['ID', '업체명', '대표자', '사업자번호', '주소', '등록일']}
-      hiddenColumns={{ columns: [0], indicators: false }}
-      height="auto"
-      autoWrapRow={true}
-      autoWrapCol={true}
-      licenseKey="non-commercial-and-evaluation"
-      afterOnCellMouseDown={(e, coords) => {
-        const now = Date.now();
-        const last = lastClickRef.current;
-
-        if (last.row === coords.row && now - last.time < 250) {
-          onDoubleClick(coords.row);
-        }
-
-        lastClickRef.current = { row: coords.row, time: now };
-      }}
-    />
+    <div>
+      <div className="m-2">
+        <CustomButton text={'+ 업체 등록'} onClick={handleShowModal} />
+      </div>
+      <DataTable
+        columns={columns}
+        data={companies}
+      />
+      <CompanyCreateForm
+        showModal={showModal}
+        setShowModal={setShowModal}
+        fetchCompanyList={fetchCompanyList}
+        setCompanies={setCompanies} />
+    </div>
+    
   );
 }

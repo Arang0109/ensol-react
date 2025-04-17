@@ -18,3 +18,14 @@ code {
     monospace;
 }
 
+:root[data-bs-theme='light'] {
+  --bg-color: #EEEEEE;
+  --text-color: #000000;
+  --btn-variant: #000000;
+}
+
+:root[data-bs-theme='dark'] {
+  --bg-color: #31363F;
+  --text-color: #FFFFFF;
+  --btn-variant: #FFFFFF;
+}

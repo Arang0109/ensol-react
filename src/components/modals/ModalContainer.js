@@ -1,4 +1,5 @@
 import { Modal, Button } from 'react-bootstrap';
+import { CustomButton } from 'components/buttons';
 
 export default function ModalContainer({
   show,
@@ -14,8 +15,8 @@ export default function ModalContainer({
       </Modal.Header>
       <Modal.Body>{children}</Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={onClose}>취소</Button>
-        <Button variant="primary" onClick={onSubmit}>등록</Button>
+        <CustomButton text="취소" onClick={onClose} />
+        <CustomButton text="등록" onClick={onSubmit} />
       </Modal.Footer>
     </Modal>
   );

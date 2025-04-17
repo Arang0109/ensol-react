@@ -1,3 +1,3 @@
-export { default as CompanyList } from './CompanyList';
-export { default as CompanyDetail } from './CompanyDetail';
-export { default as WorkplaceList } from './WorkplaceList';
+export { default as ManageCompany } from './ManageCompany';
+export { default as ManageCompanyDetail } from './ManageCompanyDetail';
+export { default as ManageWorkplace } from './ManageWorkplace';

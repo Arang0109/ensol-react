@@ -12,14 +12,15 @@ export default function WorkplaceTable({ workplaces, onDoubleClick }) {
       columns={[
         { data: 'workplaceId' },
 				{ data: 'compnayId' },
-        { data: 'workplaceName' },
+        { data: 'isSelect', type: 'checkbox'},
+        { data: 'workplaceName', type: 'text' },
         { data: 'mainProduction' },
         { data: 'businessType' },
 				{ data: 'workplaceSize' },
 				{ data: 'address' },
         { data: 'regDate' }
       ]}
-      colHeaders={['사업장ID', '의뢰업체ID', '측정대상 사업장', '주생산 품목', '업종', '사업장 종별', '주소', '등록일']}
+      colHeaders={['사업장ID', '의뢰업체ID', 'selceted', '측정대상 사업장', '주생산 품목', '업종', '사업장 종별', '주소', '등록일']}
       hiddenColumns={{ columns: [0,1], indicators: false }}
       height="auto"
       autoWrapRow={true}

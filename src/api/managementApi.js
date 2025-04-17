@@ -7,6 +7,11 @@ export const fetchCompanyList = async () => {
   return response.data;
 };
 
+export const fetchWorkplaceList = async () => {
+  const response = await axios.get(`${API_BASE}/workplaces`);
+  return response.data;
+}
+
 export const fetchCompanyDetail = async (companyId) => {
   const response = await axios.get(`${API_BASE}/companies/${companyId}`);
   return response.data;
@@ -19,4 +24,9 @@ export const createCompany = async (companyData) => {
 
 export const updateCompany = async (companyData) => {
   const response = await axios.patch(`${API_BASE}/companies/${companyData.companyId}`, companyData);
+}
+
+export const deleteCompany = async (companyId) => {
+  const response = await axios.delete(`${API_BASE}/companies/${companyId}`)
+  return response.data;
 }
