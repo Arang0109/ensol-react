@@ -2,7 +2,11 @@ import 'App.css';
 import { Routes, Route } from 'react-router-dom'
 
 import MainPage from 'pages/home/MainPage';
-import { ManageCompany, ManageCompanyDetail, ManageWorkplace } from 'pages/management';
+import { 
+  ManageCompany, ManageCompanyDetail,
+  ManageWorkplace, ManageWorkplaceDetail,
+  ManageStack, ManageStackDetail,
+  ManagePollutant } from 'pages/management';
 
 import { Header }  from 'components/sementics';
 
@@ -19,6 +23,10 @@ function App() {
             <Route path="/companies" element={<ManageCompany />} />
             <Route path="/companies/:companyId" element={<ManageCompanyDetail />} />
             <Route path="/workplaces" element={<ManageWorkplace />} />
+            <Route path="/workplaces/:workplaceId" element={<ManageWorkplaceDetail />} />
+            <Route path="/stacks" element={<ManageStack />} />
+            <Route path="/stacks/:stackId" element={<ManageStackDetail />} />
+            <Route path="/pollutants" element={<ManagePollutant />} />
           </Routes>
         </main>
       </ThemeProvider>

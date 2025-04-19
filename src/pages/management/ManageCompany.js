@@ -1,7 +1,6 @@
 import { CompanyTable } from "features/company";
 
 export default function ManageCompany() {
-  // useState 작성
   return (
     <div className="container-fluid mt-4">
       <div className="border p-4" style={{

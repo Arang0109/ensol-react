@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 
-import { fetchCompanyList  } from 'api/managementApi';
+import { fetchCompanyList  } from 'api/CompanyApi';
 
 import { CustomButton } from 'components/buttons';
 
@@ -11,6 +11,7 @@ import { CompanyCreateForm } from 'features/company';
 const columns = [
 	{
 		name: '측정대행 의뢰업체',
+    selector: row => row.companyName,
 		cell: row => (
       <Link to={`/companies/${row.companyId}`} style={{ textDecoration: 'none' }}>
         {row.companyName}
@@ -39,7 +40,7 @@ export default function CompanyTable() {
 
   return (
     <div>
-      <div className="m-2">
+      <div className='m-1'>
         <CustomButton text={'+ 업체 등록'} onClick={handleShowModal} />
       </div>
       <DataTable

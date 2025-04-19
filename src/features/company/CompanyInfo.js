@@ -1,8 +1,6 @@
 import { Form, Row, Col } from 'react-bootstrap';
-import useBizNumberFormatter from 'hooks/useBizNumberFormatter';
 
 export default function CompanyInfo({ company, setCompany, errors, readOnly }) {
-	const formatBizNumber = useBizNumberFormatter();
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;

@@ -21,9 +21,9 @@ export default function Headers() {
 						<NavDropdown title="관리" id="nav-dropdown-management">
               <NavDropdown.Item as={Link} to="/companies">측정대행 의뢰업체</NavDropdown.Item>
               <NavDropdown.Item as={Link} to="/workplaces">측정대상 사업장</NavDropdown.Item>
-							<NavDropdown.Item href="#action/3.5">측정 시설</NavDropdown.Item>
+							<NavDropdown.Item as={Link} to="/stacks">측정 시설</NavDropdown.Item>
 							<NavDropdown.Divider />
-							<NavDropdown.Item href="#action/3.6">측정 항목</NavDropdown.Item>
+							<NavDropdown.Item as={Link} to="/pollutants">측정 항목</NavDropdown.Item>
             </NavDropdown>
 						<NavDropdown title="문서" id="nav-dropdown-document">
               <NavDropdown.Item href="#action/3.3">인수인계서</NavDropdown.Item>

@@ -1,41 +1,31 @@
-import { HotTable	} from "@handsontable/react-wrapper";
-import { useRef } from "react";
+import { Link } from 'react-router-dom';
+import DataTable from 'react-data-table-component';
 
-export default function WorkplaceTable({ workplaces, onDoubleClick }) {
-	const lastClickRef = useRef({ row: null, time: 0 });
+const columns = [
+  {
+    name: '측정대상 사업장',
+    selector: row => row.workplaceName,
+    cell: row => (
+      <Link to={`/workplaces/${row.workplaceId}`} style={{ textDecoration: 'none' }}>
+        {row.workplaceName}
+      </Link>
+    ),
+    sortable: true
+  },
+  { name: '주소', selector: row => row.address },
+  { name: '업종', selector: row => row.businessType },
+  { name: '주생산 품목', selector: row => row.mainProduction },
+  { name: '사업장 종별', selector: row => row.workplaceSize + " 종" },
+  { name: '등록일', selector: row => row.regDate },
+];
 
+export default function WorkplaceTable({ workplaces }) {
 	return (
-		<HotTable
-      data={workplaces}
-      stretchH="all"
-      readOnly={true}
-      columns={[
-        { data: 'workplaceId' },
-				{ data: 'compnayId' },
-        { data: 'isSelect', type: 'checkbox'},
-        { data: 'workplaceName', type: 'text' },
-        { data: 'mainProduction' },
-        { data: 'businessType' },
-				{ data: 'workplaceSize' },
-				{ data: 'address' },
-        { data: 'regDate' }
-      ]}
-      colHeaders={['사업장ID', '의뢰업체ID', 'selceted', '측정대상 사업장', '주생산 품목', '업종', '사업장 종별', '주소', '등록일']}
-      hiddenColumns={{ columns: [0,1], indicators: false }}
-      height="auto"
-      autoWrapRow={true}
-      autoWrapCol={true}
-      licenseKey="non-commercial-and-evaluation"
-			afterOnCellMouseDown={(e, coords) => {
-        const now = Date.now();
-        const last = lastClickRef.current;
-
-        if (last.row === coords.row && now - last.time < 150) {
-          onDoubleClick(coords.row);
-        }
-
-        lastClickRef.current = { row: coords.row, time: now };
-      }}
-    />
+		<div>
+      <DataTable
+        columns={columns}
+        data={workplaces}
+      />
+    </div>
 	);
 }

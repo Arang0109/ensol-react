@@ -3,7 +3,7 @@ import useBizNumberFormatter from 'hooks/useBizNumberFormatter';
 
 import ModalContainer from 'components/modals/ModalContainer';
 
-import { createCompany } from 'api/managementApi';
+import { createCompany } from 'api/CompanyApi';
 
 import useCompanyForm from 'hooks/useCompanyForm';
 
