@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ensolution.ensol.repository.app.mybatis.BoardMapper">
+  <sql id="select">
+    SELECT GROUP_CONCAT(stack_measurement_id) AS stack_measurement_ids,
+           s.stack_id, GROUP_CONCAT(pollutant_id) AS pollutant_ids,
+           s.workplace_id, stack_name, cycle_type,
+           MIN(sm.is_completed) AS is_completed
+    FROM stack_measurement sm
+        LEFT JOIN stack s ON sm.stack_id = s.stack_id
+  </sql>
+
+  <select id="selectAll" resultType="boardDto">
+    <include refid="select"/>
+    GROUP BY s.stack_id, cycle_type
+  </select>
+
+  <select id="selectByWorkplace" parameterType="List" resultType="boardDto">
+    <include refid="select"/>
+    WHERE s.workplace_id IN
+    <foreach item="workplace_id" collection="list" open="(" separator="," close=")">
+      #{workplace_id}
+    </foreach>
+    GROUP BY s.stack_id, cycle_type
+  </select>
+</mapper>

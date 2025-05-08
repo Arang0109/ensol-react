@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ensolution.ensol.repository.app.mybatis.ScheduleTableMapper">
+    <select id="scheduleMainList" resultType="ScheduleTableDto">
+        SELECT
+            sc.measure_date,
+            sc.main_reg_number,
+            sc.measurement_purpose,
+            w.workplace_id,
+            w.workplace_name,
+            t.team_id,
+            t.team_name,
+            GROUP_CONCAT(DISTINCT s.stack_name SEPARATOR ', ') AS stack_names,
+            GROUP_CONCAT(DISTINCT sc.grouped_schedule_id) AS grouped_schedule_ids,
+            w.address
+        FROM grouped_schedule sc
+                 LEFT JOIN stack s ON sc.stack_id = s.stack_id
+                 LEFT JOIN workplace w ON s.workplace_id = w.workplace_id
+                 LEFT JOIN team t ON sc.team_id = t.team_id
+                 LEFT JOIN scheduled_measurement scm ON sc.grouped_schedule_id = scm.grouped_schedule_id
+        GROUP BY sc.measure_date, w.workplace_id, t.team_id, sc.main_reg_number, sc.measurement_purpose
+        ORDER BY sc.measure_date DESC, sc.main_reg_number DESC;
+    </select>
+
+    <select id="scheduleSubList" parameterType="list" resultType="SubScheduleTableDto">
+        SELECT
+            scm.grouped_schedule_id,
+            s.stack_id,
+            s.stack_name,
+            grs.main_reg_number,
+            grs.sub_reg_number,
+            grs.status AS sub_status,
+            GROUP_CONCAT(DISTINCT p.pollutant_name_kr SEPARATOR ', ') AS pollutant_names,
+            grs.reg_date
+        FROM scheduled_measurement scm
+            LEFT JOIN grouped_schedule grs ON scm.grouped_schedule_id = grs.grouped_schedule_id
+            LEFT JOIN stack_measurement sm ON scm.stack_measurement_id = sm.stack_measurement_id
+            LEFT JOIN stack s ON sm.stack_id = s.stack_id
+            LEFT JOIN pollutant p ON sm.pollutant_id = p.pollutant_id
+        WHERE grs.grouped_schedule_id IN
+        <foreach item="groupedScheduleId" collection="list" open="(" separator="," close=")">
+            #{groupedScheduleId}
+        </foreach>
+        GROUP BY scm.grouped_schedule_id, s.stack_id, s.stack_name, grs.main_reg_number, grs.sub_reg_number, grs.status, grs.reg_date;
+    </select>
+
+    <update id="updateStackMeasurementComplete" parameterType="list">
+        UPDATE stack_measurement
+        SET is_completed = 1
+        WHERE stack_measurement_id IN
+        <foreach item="stack_measurement_id" index="index" collection="list"
+                 open="(" separator="," close=")">
+            #{stack_measurement_id}
+        </foreach>
+    </update>
+
+    <update id="updateScheduleComplete" parameterType="list">
+        UPDATE schedule
+        SET is_completed = 1
+        WHERE schedule_id IN
+        <foreach item="schedule_id" index="index" collection="list"
+                 open="(" separator="," close=")">
+            #{schedule_id}
+        </foreach>
+    </update>
+</mapper>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ensolution.ensol.repository.app.mybatis.IdentityMapper">
+    <select id="getIds" parameterType="Integer" resultType="TableIdDto">
+        SELECT w.company_id AS companyId,
+               w.workplace_id AS workplaceId,
+               s.stack_id AS stackId
+        FROM stack s
+            LEFT JOIN workplace w ON s.workplace_id = w.workplace_id
+        WHERE s.stack_id = #{stackId}
+    </select>
+</mapper>

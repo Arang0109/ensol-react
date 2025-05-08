@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ensolution.ensol.repository.app.mybatis.HistoryMapper">
+    <select id="selectStackHistory" parameterType="int" resultType="HistoryDto">
+        SELECT
+            schedule.measure_date AS measureDate,
+            sm.stack_id AS stackId,
+            schedule.team_id AS teamId,
+            t.team_name AS teamName,
+            GROUP_CONCAT(DISTINCT sm.pollutant_id ORDER BY sm.pollutant_id ASC) AS pollutantIds
+        FROM schedule
+            LEFT JOIN stack_measurement sm ON schedule.stack_measurement_id = sm.stack_measurement_id
+            LEFT JOIN team t ON schedule.team_id = t.team_id
+        WHERE sm.stack_id = #{stackId} AND schedule.is_completed = 1
+        GROUP BY schedule.measure_date, sm.stack_id, schedule.team_id, t.team_name
+        ORDER BY schedule.measure_date DESC;
+    </select>
+</mapper>

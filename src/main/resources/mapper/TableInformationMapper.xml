@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ensolution.ensol.repository.app.mybatis.TableInformationMapper">
+    <sql id="selectTableArg">
+        SELECT
+            s.stack_id AS stackId,
+            s.stack_name AS stackName,
+            c.company_name AS companyName,
+            w.workplace_name AS workplaceName,
+            s.stack_type AS stackType,
+            s.stack_size AS stackSize,
+            s.prevention AS prevention
+        FROM stack s
+            LEFT JOIN workplace w ON s.workplace_id = w.workplace_id
+            LEFT JOIN company c ON w.company_id = c.company_id
+    </sql>
+
+    <select id="selectStacksOfTable" resultType="StackTableDto">
+        <include refid="selectTableArg"/>
+    </select>
+
+    <select id="selectStacksByWorkplaceOfTable" parameterType="Integer" resultType="StackTableDto">
+        <include refid="selectTableArg"/>
+        WHERE w.workplace_id = #{workplaceId}
+    </select>
+
+    <select id="stackMeasurementsOfStack" parameterType="Integer" resultType="StackMeasurementsOfStackDto">
+        SELECT
+            sm.stack_measurement_id AS stackMeasurementId,
+            sm.stack_id AS stackId,
+            sm.pollutant_id AS pollutantId,
+            sm.cycle_type AS cycleType,
+            sm.allow_value AS allowValue,
+            sm.oxygen_concentration As oxygenConcentration,
+            sm.is_completed AS isCompleted,
+            sm.is_measured AS isMeasured,
+            p.pollutant_name_kr AS pollutantNameKR,
+            p.pollutant_name_en AS pollutantNameEN,
+            p.pollutant_name_hyundai As pollutantNameHyundai,
+            p.method
+        FROM stack_measurement `sm`
+            INNER JOIN pollutant `p` on sm.pollutant_id = p.pollutant_id
+        WHERE sm.stack_id = #{stackId};
+    </select>
+</mapper>
