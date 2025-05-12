@@ -134,7 +134,7 @@ public class WorkplaceController {
       @ApiResponse(responseCode = "400", description = "요청 형식 오류")
   })
   @DeleteMapping("/{workplaceId}")
-  public ResponseEntity<String> deleteWorkplace(
+  public ResponseEntity<?> deleteWorkplace(
       
       @PathVariable Integer workplaceId
       
@@ -142,6 +142,6 @@ public class WorkplaceController {
     
     workplaceService.deleteWorkplace(workplaceId);
     
-    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    return ResponseEntity.noContent().build();
   }
 }

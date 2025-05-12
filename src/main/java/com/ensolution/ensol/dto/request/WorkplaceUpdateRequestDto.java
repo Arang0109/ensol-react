@@ -17,11 +17,6 @@ public class WorkplaceUpdateRequestDto {
       accessMode = Schema.AccessMode.READ_ONLY)
   private Integer workplaceId;
   
-  @Schema(
-      description = "측정대행 의뢰업체 Id",
-      accessMode = Schema.AccessMode.READ_ONLY)
-  private Integer companyId;
-  
   @Schema(description = "측정대상 사업장 이름", example = "테스트 사업장")
   @NotBlank(message = "필수 기입")
   private String workplaceName;
