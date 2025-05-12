@@ -2,14 +2,15 @@ package com.ensolution.ensol.service.company.impl;
 
 import com.ensolution.ensol.common.exception.CustomDKException;
 import com.ensolution.ensol.dto.app.entity.facility.WorkplaceDto;
+import com.ensolution.ensol.dto.request.WorkplaceUpdateRequestDto;
 import com.ensolution.ensol.service.company.WorkplaceDataService;
 import com.ensolution.ensol.service.company.WorkplaceService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,8 +20,8 @@ public class WorkplaceServiceImpl implements WorkplaceService {
   private final WorkplaceDataService workplaceDataService;
 
   @Override
-  public Optional<WorkplaceDto> findWorkplaceById(Integer id) {
-    return workplaceDataService.findWorkplaceById(id);
+  public Optional<WorkplaceDto> getWorkplaceById(Integer workplaceId) {
+    return workplaceDataService.getWorkplaceById(workplaceId);
   }
 
   @Override
@@ -30,56 +31,37 @@ public class WorkplaceServiceImpl implements WorkplaceService {
 
   @Override
   public List<WorkplaceDto> findAllWorkplaces() {
-    return workplaceDataService.findAll();
+    return workplaceDataService.findAllWorkplaces();
   }
 
   @Override
-  public Integer findFactoryId(Integer workplaceId) {
-    return workplaceDataService.findFactoryId(workplaceId);
-  }
-
-  @Override
-  public void createWorkplace(WorkplaceDto workplaceDto) {
+  public WorkplaceDto registerWorkplace(WorkplaceDto workplaceDto) {
     try {
       workplaceDto.setRegDate(LocalDate.now());
       workplaceDataService.saveWorkplace(workplaceDto);
     } catch (DuplicateKeyException e) {
       throw new CustomDKException("workplace", "Name", workplaceDto.getWorkplaceName(), e);
     }
+    
+    return workplaceDto;
   }
 
   @Override
-  public void updateWorkplace(WorkplaceDto workplaceDto) {
-    if (!workplaceDataService.existsById(workplaceDto.getWorkplaceId())) {
-      throw new IllegalArgumentException("Workplace with Name " + workplaceDto.getWorkplaceName() + " does not exist.");
+  public void updateWorkplace(Integer workplaceId, WorkplaceUpdateRequestDto requestDto) {
+    if (!workplaceDataService.existsById(workplaceId)) {
+      throw new IllegalArgumentException("Workplace with Name " + requestDto.getWorkplaceName() + " does not exist.");
     }
-    workplaceDataService.updateWorkplace(workplaceDto);
+    
+    requestDto.setWorkplaceId(workplaceId);
+    workplaceDataService.updateWorkplaceProfile(requestDto);
   }
 
   @Override
-  public void removeWorkplaces(List<WorkplaceDto> workplaces) {
-    if (workplaces == null || workplaces.isEmpty()) {
-      throw new IllegalArgumentException("Input list cannot be null or empty");
-    }
-
-    List<Integer> ids = new ArrayList<>();
-
-    for (WorkplaceDto workplaceDto : workplaces) {
-      if (workplaceDto == null) {
-        throw new IllegalArgumentException("WorkplaceDto cannot be null");
-      }
-      ids.add(workplaceDto.getWorkplaceId());
-    }
-
+  public void deleteWorkplace(Integer workplaceId) {
     try {
-      workplaceDataService.deleteWorkplaces(ids);
-    } catch (DuplicateKeyException e) {
-      throw new RuntimeException("Database error occurred while deleting workplaces", e);
+      workplaceDataService.deleteWorkplace(workplaceId);
+    } catch (DataAccessException e) {
+      throw new RuntimeException("Database error occurred while deleting companies", e);
     }
-  }
-
-  @Override
-  public void removeWorkplace(Integer workplaceId) {
-    workplaceDataService.deleteWorkplace(workplaceId);
   }
 }

@@ -1,105 +1,97 @@
 package com.ensolution.ensol.service.schedule.impl;
 
-import com.ensolution.ensol.common.enums.ScheduleSubStatus;
-import com.ensolution.ensol.common.enums.ScheduleSupStatus;
-import com.ensolution.ensol.dto.app.entity.schedule.GroupedScheduleDto;
+import com.ensolution.ensol.dto.app.entity.facility.StackMeasurementDto;
+import com.ensolution.ensol.dto.app.entity.schedule.CreateScheduleDto;
 import com.ensolution.ensol.dto.app.entity.schedule.MeasurementDataDto;
-import com.ensolution.ensol.dto.app.entity.schedule.ScheduleDto;
-import com.ensolution.ensol.dto.app.entity.schedule.ScheduledMeasurementDto;
-import com.ensolution.ensol.dto.app.query.table.ScheduleTableDto;
-import com.ensolution.ensol.dto.app.query.table.SubScheduleTableDto;
-import com.ensolution.ensol.entity.app.schedule.GroupedSchedule;
+import com.ensolution.ensol.dto.app.query.table.ScheduledWorkplaceTableDto;
+import com.ensolution.ensol.dto.app.query.table.ScheduledStackTableDto;
+import com.ensolution.ensol.entity.app.facility.StackMeasurement;
+import com.ensolution.ensol.entity.app.facility.Workplace;
+import com.ensolution.ensol.entity.app.schedule.ScheduledStack;
+import com.ensolution.ensol.entity.app.schedule.ScheduledWorkplace;
 import com.ensolution.ensol.entity.app.schedule.MeasurementData;
-import com.ensolution.ensol.entity.app.schedule.ScheduledMeasurement;
-import com.ensolution.ensol.mapper.app.schedule.GroupedScheduleMapper;
+import com.ensolution.ensol.entity.app.schedule.MeasurementSchedule;
+import com.ensolution.ensol.mapper.app.facility.StackMeasurementMapper;
+import com.ensolution.ensol.mapper.app.facility.WorkplaceMapper;
+import com.ensolution.ensol.mapper.app.schedule.MeasurementScheduleMapper;
+import com.ensolution.ensol.mapper.app.schedule.ScheduledStackMapper;
+import com.ensolution.ensol.mapper.app.schedule.ScheduledWorkplaceMapper;
 import com.ensolution.ensol.mapper.app.schedule.MeasurementDataMapper;
-import com.ensolution.ensol.mapper.app.schedule.ScheduledMeasurementMapper;
-import com.ensolution.ensol.repository.app.jpa.schedule.MeasurementDataRepository;
-import com.ensolution.ensol.repository.app.jpa.schedule.ScheduledMeasurementRepository;
-import com.ensolution.ensol.repository.app.jpa.schedule.GroupedScheduleRepository;
+import com.ensolution.ensol.repository.app.jpa.facility.StackMeasurementRepository;
+import com.ensolution.ensol.repository.app.jpa.facility.StackRepository;
+import com.ensolution.ensol.repository.app.jpa.facility.WorkplaceRepository;
+import com.ensolution.ensol.repository.app.jpa.schedule.MeasurementScheduleRepository;
+import com.ensolution.ensol.repository.app.jpa.schedule.ScheduledStackRepository;
+import com.ensolution.ensol.repository.app.jpa.schedule.ScheduledWorkplaceRepository;
 import com.ensolution.ensol.repository.app.mybatis.ScheduleTableMapper;
 import com.ensolution.ensol.service.schedule.ScheduleDataService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ScheduleDataServiceImpl implements ScheduleDataService {
   private final ScheduleTableMapper scheduleTableMapper;
   
-  private final GroupedScheduleRepository groupedScheduleRepository;
-  private final GroupedScheduleMapper groupedScheduleMapper;
-  private final ScheduledMeasurementRepository scheduledMeasurementRepository;
-  private final ScheduledMeasurementMapper scheduledMeasurementMapper;
+  private final WorkplaceRepository workplaceRepository;
+  private final StackRepository stackRepository;
+  
+  private final ScheduledWorkplaceRepository scheduledWorkplaceRepository;
+  private final ScheduledWorkplaceMapper scheduledWorkplaceMapper;
+  private final ScheduledStackRepository scheduledStackRepository;
+  private final ScheduledStackMapper scheduledStackMapper;
+  private final MeasurementScheduleRepository measurementScheduleRepository;
   private final MeasurementDataMapper measurementDataMapper;
+  private final StackMeasurementRepository stackMeasurementRepository;
   
   @Override
-  public List<ScheduleTableDto> findAll() {
-    List<ScheduleTableDto> scheduleList = scheduleTableMapper.scheduleMainList();
+  public List<ScheduledWorkplaceTableDto> findSchedules() {
+    return scheduleTableMapper.scheduledWorkplaceList();
+  }
+  
+  @Override
+  public List<ScheduledStackTableDto> findScheduleByScheduledWorkplaceId(Integer scheduledWorkplaceId) {
+    return scheduleTableMapper.scheduleStackList(scheduledWorkplaceId);
+  }
+  
+  @Override
+  @Transactional
+  public void saveSchedule(CreateScheduleDto dto) {
+    // 1. 사업장 저장
+    Workplace workplace = workplaceRepository.findById(dto.getScheduledWorkplace().getWorkplaceId())
+        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사업장입니다"));
     
-    for (ScheduleTableDto schedule : scheduleList) {
-      String idString = schedule.getGroupedScheduleIds();
+    ScheduledWorkplace scheduledWorkplace = scheduledWorkplaceMapper.toEntity(dto.getScheduledWorkplace());
+    scheduledWorkplace.setWorkplace(workplace);
+    ScheduledWorkplace savedWorkplace = scheduledWorkplaceRepository.save(scheduledWorkplace);
+    
+    // 2. 스택 저장
+    ScheduledStack stack = scheduledStackMapper.toEntity(dto.getScheduledStack());
+    stack.setScheduledWorkplace(savedWorkplace);
+    ScheduledStack savedStack = scheduledStackRepository.save(stack);
+    
+    // 3. 측정일정 저장
+    List<StackMeasurementDto> stackMeasurementList = dto.getStackMeasurements();
+    for (StackMeasurementDto smDto : stackMeasurementList) {
+      StackMeasurement stackMeasurement = stackMeasurementRepository
+          .findById(smDto.getStackMeasurementId())
+          .orElseThrow(() -> new IllegalArgumentException("측정 항목 ID가 유효하지 않습니다: " + smDto.getStackMeasurementId()));
       
-      if (idString == null || idString.isBlank()) {
-        schedule.setSupStatus(ScheduleSupStatus.NONCOMPLETED);
-        continue;
-      }
-      
-      List<Integer> groupedIds = Arrays.stream(idString.split(","))
-          .map(String::trim)
-          .filter(s -> !s.isEmpty())
-          .map(Integer::parseInt)
-          .toList();
-      
-      List<GroupedSchedule> groupedSchedules = groupedScheduleRepository.findByGroupedScheduleIdIn(groupedIds);
-      List<GroupedScheduleDto> groupedScheduleDtos = groupedScheduleMapper.toDtoList(groupedSchedules);
-      
-      boolean allCompleted = groupedScheduleDtos.stream()
-          .allMatch(g -> g.getStatus() == ScheduleSubStatus.COMPLETED); // 또는 ENUM 비교
-      
-      schedule.setSupStatus(allCompleted ? ScheduleSupStatus.COMPLETED : ScheduleSupStatus.NONCOMPLETED);
+      MeasurementSchedule schedule = new MeasurementSchedule();
+      schedule.setScheduledStack(savedStack);
+      schedule.setStackMeasurement(stackMeasurement);
+      measurementScheduleRepository.save(schedule);
     }
-    
-    return scheduleList;
   }
   
   @Override
-  public List<SubScheduleTableDto> findAllSub(List<Integer> groupedScheduleIds) {
-    return scheduleTableMapper.scheduleSubList(groupedScheduleIds);
-  }
-  
-  @Override
-  public GroupedScheduleDto saveGroupedSchedule(GroupedScheduleDto groupedScheduleDto) {
-    GroupedSchedule entity = groupedScheduleMapper.toEntity(groupedScheduleDto);
-    
-    MeasurementData data = new MeasurementData();
-    data.setGroupedSchedule(entity);
-    entity.setMeasurementData(data);
-    entity.setRegDate(LocalDate.now());
-    
-    GroupedSchedule saved = groupedScheduleRepository.save(entity);
-    
-    return groupedScheduleMapper.toDto(saved);
-  }
-  
-  @Override
-  public List<ScheduledMeasurementDto> saveScheduledMeasurements(List<ScheduledMeasurementDto> scheduledMeasurements) {
-    List<ScheduledMeasurement> entityList = scheduledMeasurementMapper.toEntityList(scheduledMeasurements);
-    List<ScheduledMeasurement> saved = scheduledMeasurementRepository.saveAll(entityList);
-    return scheduledMeasurementMapper.toDtoList(saved);
-  }
-  
-  @Override
-  public MeasurementDataDto findMeasurementDataByGroupedScheduleId(Integer scheduleId) {
-    GroupedSchedule schedule = groupedScheduleRepository.findById(scheduleId)
-        .orElseThrow(() -> new EntityNotFoundException("해당 스케줄이 존재하지 않습니다: " + scheduleId));
+  public MeasurementDataDto findMeasurementDataByScheduledStackId(Integer scheduledStackId) {
+    ScheduledStack schedule = scheduledStackRepository.findById(scheduledStackId)
+        .orElseThrow(() -> new EntityNotFoundException("해당 스케줄이 존재하지 않습니다: " + scheduledStackId));
     
     MeasurementData measurementData = schedule.getMeasurementData();
     

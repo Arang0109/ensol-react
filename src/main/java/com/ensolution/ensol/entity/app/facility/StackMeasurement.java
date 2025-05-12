@@ -1,7 +1,7 @@
 package com.ensolution.ensol.entity.app.facility;
 
 import com.ensolution.ensol.entity.app.pollutant.Pollutant;
-import com.ensolution.ensol.entity.app.schedule.ScheduledMeasurement;
+import com.ensolution.ensol.entity.app.schedule.MeasurementSchedule;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -30,12 +30,8 @@ public class StackMeasurement {
   private String allowValue;
   @Column(name = "oxygen_concentration")
   private String oxygenConcentration;
-  @Column(name = "is_completed")
-  private boolean isCompleted;
-  @Column(name = "is_measured")
-  private boolean isMeasured;
 
   @JsonIgnore
   @OneToMany(mappedBy = "stackMeasurement")
-  private List<ScheduledMeasurement> scheduledMeasurements;
+  private List<MeasurementSchedule> measurementSchedules;
 }

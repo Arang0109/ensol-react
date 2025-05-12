@@ -11,8 +11,8 @@ import lombok.Setter;
 public class MeasurementData {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "grouped_schedule_id", nullable = false)
-  private Integer groupedScheduleId;
+  @Column(name = "scheduled_stack_id", nullable = false)
+  private Integer scheduledStackId;
   @Column(name = "dynamic_pressure")
   private Double dynamicPressure;
   @Column(name = "static_pressure")
@@ -22,6 +22,6 @@ public class MeasurementData {
   
   @OneToOne
   @MapsId
-  @JoinColumn(name = "grouped_schedule_id")
-  private GroupedSchedule groupedSchedule;
+  @JoinColumn(name = "scheduled_stack_id")
+  private ScheduledStack scheduledStack;
 }

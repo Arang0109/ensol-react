@@ -10,8 +10,8 @@
   <typeAliases>
     <typeAlias alias="StackTableDto" type="com.ensolution.ensol.dto.app.query.table.StackTableDto"/>
     <typeAlias alias="TableIdDto" type="com.ensolution.ensol.dto.app.query.IdentityDto"/>
-    <typeAlias alias="ScheduleTableDto" type="com.ensolution.ensol.dto.app.query.table.ScheduleTableDto"/>
-    <typeAlias alias="SubScheduleTableDto" type="com.ensolution.ensol.dto.app.query.table.SubScheduleTableDto"/>
+    <typeAlias alias="ScheduledWorkplaceTableDto" type="com.ensolution.ensol.dto.app.query.table.ScheduledWorkplaceTableDto"/>
+    <typeAlias alias="ScheduledStackTableDto" type="com.ensolution.ensol.dto.app.query.table.ScheduledStackTableDto"/>
     <typeAlias alias="StackMeasurementsOfStackDto" type="com.ensolution.ensol.dto.app.query.table.StackMeasurementTableDto"/>
     <typeAlias alias="HistoryDto" type="com.ensolution.ensol.dto.app.query.HistoryDto"/>
     <typeAlias alias="BoardDto" type="com.ensolution.ensol.dto.app.query.BoardDto"/>

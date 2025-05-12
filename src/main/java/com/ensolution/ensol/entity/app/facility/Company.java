@@ -26,7 +26,7 @@ public class Company {
   private String ceoName;
   @Column(name = "biz_number", nullable = false)
   private String bizNumber;
-  @Column(name = "reg_date")
+  @Column(name = "reg_date", updatable = false)
   private LocalDate regDate;
 
   @JsonIgnore

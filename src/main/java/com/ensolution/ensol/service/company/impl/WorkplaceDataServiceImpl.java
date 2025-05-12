@@ -1,9 +1,9 @@
 package com.ensolution.ensol.service.company.impl;
 
 import com.ensolution.ensol.dto.app.entity.facility.WorkplaceDto;
+import com.ensolution.ensol.dto.request.WorkplaceUpdateRequestDto;
 import com.ensolution.ensol.entity.app.facility.Workplace;
 import com.ensolution.ensol.mapper.app.facility.WorkplaceMapper;
-import com.ensolution.ensol.repository.app.jpa.facility.CompanyRepository;
 import com.ensolution.ensol.repository.app.jpa.facility.WorkplaceRepository;
 import com.ensolution.ensol.service.company.WorkplaceDataService;
 import lombok.RequiredArgsConstructor;
@@ -13,16 +13,17 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static com.ensolution.ensol.common.util.UpdateUtils.updateIfPresent;
+
 @Service
 @RequiredArgsConstructor
 public class WorkplaceDataServiceImpl implements WorkplaceDataService {
-  private final CompanyRepository companyRepository;
   private final WorkplaceRepository workplaceRepository;
   private final WorkplaceMapper workplaceMapper;
 
   @Override
-  public Optional<WorkplaceDto> findWorkplaceById(Integer id) {
-    return workplaceRepository.findById(id).map(workplaceMapper::toDto);
+  public Optional<WorkplaceDto> getWorkplaceById(Integer workplaceId) {
+    return workplaceRepository.findById(workplaceId).map(workplaceMapper::toDto);
   }
 
   @Override
@@ -32,16 +33,9 @@ public class WorkplaceDataServiceImpl implements WorkplaceDataService {
   }
 
   @Override
-  public List<WorkplaceDto> findAll() {
+  public List<WorkplaceDto> findAllWorkplaces() {
     List<Workplace> workplaces = workplaceRepository.findAll();
     return workplaceMapper.toDtoList(workplaces);
-  }
-
-  @Override
-  public Integer findFactoryId(Integer workplaceId) {
-
-
-    return 0;
   }
 
   @Override
@@ -53,33 +47,23 @@ public class WorkplaceDataServiceImpl implements WorkplaceDataService {
 
   @Override
   @Transactional
-  public void updateWorkplace(WorkplaceDto workplaceDto) {
-    Workplace workplace = workplaceRepository.findById(workplaceDto.getWorkplaceId())
-        .orElseThrow(() -> new RuntimeException("Workplace not found"));
+  public void updateWorkplaceProfile(WorkplaceUpdateRequestDto requestDto) {
+    Workplace workplace = workplaceRepository.findById(requestDto.getWorkplaceId())
+        .orElseThrow(() ->
+            new IllegalArgumentException("존재하지 않는 사업장 ID: " + requestDto.getWorkplaceId()));
 
-    if (workplaceDto.getWorkplaceName() != null) {
-      workplace.setWorkplaceName(workplaceDto.getWorkplaceName());
-    }
-
-    if (workplaceDto.getAddress() != null) {
-      workplace.setAddress(workplaceDto.getAddress());
-    }
-
-    workplace.setBusinessType(workplaceDto.getBusinessType());
-    workplace.setMainProduction(workplaceDto.getMainProduction());
-    workplace.setWorkplaceSize(workplaceDto.getWorkplaceSize());
-  }
-
-  @Override
-  public void deleteWorkplaces(List<Integer> ids) {
-    workplaceRepository.deleteAllById(ids);
+    updateIfPresent(requestDto.getWorkplaceName(), workplace::setWorkplaceName);
+    updateIfPresent(requestDto.getAddress(), workplace::setAddress);
+    updateIfPresent(requestDto.getBusinessType(), workplace::setBusinessType);
+    updateIfPresent(requestDto.getMainProduction(), workplace::setMainProduction);
+    updateIfPresent(requestDto.getWorkplaceSize(), workplace::setWorkplaceSize);
   }
 
   @Override
   public void deleteWorkplace(Integer workplaceId) { workplaceRepository.deleteById(workplaceId); }
 
   @Override
-  public boolean existsById(Integer id) {
-    return workplaceRepository.existsById(id);
+  public boolean existsById(Integer workplaceId) {
+    return workplaceRepository.existsById(workplaceId);
   }
 }

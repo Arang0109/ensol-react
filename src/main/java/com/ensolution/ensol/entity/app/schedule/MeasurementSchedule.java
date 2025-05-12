@@ -6,18 +6,18 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "scheduled_measurement")
+@Table(name = "measurement_schedule")
 @Getter
 @Setter
-public class ScheduledMeasurement {
+public class MeasurementSchedule {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "scheduled_measurement_id", nullable = false)
-  private Integer scheduledMeasurementId;
+  @Column(name = "measurement_schedule_id", nullable = false)
+  private Integer measurementScheduleId;
   
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "grouped_schedule_id")
-  private GroupedSchedule groupedSchedule;
+  @JoinColumn(name = "scheduled_stack_id")
+  private ScheduledStack scheduledStack;
   
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "stack_measurement_id")

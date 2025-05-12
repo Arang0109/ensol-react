@@ -1,10 +1,9 @@
-package com.ensolution.ensol.dto.app.entity.facility;
+package com.ensolution.ensol.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
-
-import java.time.LocalDate;
 
 @Builder
 @NoArgsConstructor
@@ -12,7 +11,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @ToString
-public class CompanyDto {
+public class CompanyUpdateRequestDto {
   
   @Schema(description = "측정대행 의뢰업체 ID", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
   private Integer companyId;
@@ -32,7 +31,4 @@ public class CompanyDto {
   
   @Schema(description = "주소", example = "부산진구 동평로 291번길 30 1층")
   private String address;
-  
-  @Schema(description = "등록일", example = "1999-01-01", accessMode = Schema.AccessMode.READ_ONLY)
-  private LocalDate regDate;
 }

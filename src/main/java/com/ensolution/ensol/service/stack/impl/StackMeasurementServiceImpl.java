@@ -30,7 +30,6 @@ public class StackMeasurementServiceImpl implements StackMeasurementService {
   @Override
   public StackMeasurementDto createStackMeasurement(StackMeasurementDto stackMeasurementDto) {
     try {
-      stackMeasurementDto.setCompleted(false);
       stackMeasurementDataService.saveStackMeasurement(stackMeasurementDto);
     } catch (DuplicateKeyException e) {
       throw new CustomDKException("StackMeasurement", "ID", stackMeasurementDto.getStackId().toString(), e);

@@ -1,6 +1,6 @@
 package com.ensolution.ensol.entity.app.organization;
 
-import com.ensolution.ensol.entity.app.schedule.GroupedSchedule;
+import com.ensolution.ensol.entity.app.schedule.ScheduledWorkplace;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -24,7 +24,7 @@ public class Team {
 
   @JsonIgnore
   @OneToMany(mappedBy = "team")
-  private List<GroupedSchedule> groupedSchedules;
+  private List<ScheduledWorkplace> scheduledWorkplaces;
   
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(

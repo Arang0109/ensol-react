@@ -34,8 +34,6 @@
             sm.cycle_type AS cycleType,
             sm.allow_value AS allowValue,
             sm.oxygen_concentration As oxygenConcentration,
-            sm.is_completed AS isCompleted,
-            sm.is_measured AS isMeasured,
             p.pollutant_name_kr AS pollutantNameKR,
             p.pollutant_name_en AS pollutantNameEN,
             p.pollutant_name_hyundai As pollutantNameHyundai,

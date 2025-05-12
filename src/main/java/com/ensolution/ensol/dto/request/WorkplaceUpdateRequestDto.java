@@ -1,9 +1,8 @@
-package com.ensolution.ensol.dto.app.entity.facility;
+package com.ensolution.ensol.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import java.time.LocalDate;
 
 @Builder
 @NoArgsConstructor
@@ -11,7 +10,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @ToString
-public class WorkplaceDto {
+public class WorkplaceUpdateRequestDto {
   
   @Schema(
       description = "측정대상 사업장 ID",
@@ -23,8 +22,8 @@ public class WorkplaceDto {
       accessMode = Schema.AccessMode.READ_ONLY)
   private Integer companyId;
   
-  @NotBlank(message = "사업장 이름은 필수입니다.")
   @Schema(description = "측정대상 사업장 이름", example = "테스트 사업장")
+  @NotBlank(message = "필수 기입")
   private String workplaceName;
   
   @Schema(description = "사업장 종별", example = "1종")
@@ -38,9 +37,4 @@ public class WorkplaceDto {
   
   @Schema(description = "업종", example = "타이어 제조업")
   private String businessType;
-  
-  @Schema(
-      description = "등록일", example = "1999-01-01",
-      accessMode = Schema.AccessMode.READ_ONLY)
-  private LocalDate regDate;
 }

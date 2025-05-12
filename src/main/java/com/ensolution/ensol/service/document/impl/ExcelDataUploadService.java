@@ -38,7 +38,6 @@ public class ExcelDataUploadService {
         stackMeasurementDto.setStackId(stackMapper.toDto(stack.get()).getStackId());
         stackMeasurementDto.setPollutantId(pollutantMapper.toDto(pollutant.get()).getPollutantId());
         stackMeasurementDto.setCycleType(item.getCycle_type());
-        stackMeasurementDto.setMeasured(!item.getCycle_type().equals("nomeasure"));
         stackMeasurementDto.setAllowValue(item.getAllow_value());
       }
       ;

@@ -1,6 +1,9 @@
 package com.ensolution.ensol.service.company.impl;
 
+import static com.ensolution.ensol.common.util.UpdateUtils.updateIfPresent;
+
 import com.ensolution.ensol.dto.app.entity.facility.CompanyDto;
+import com.ensolution.ensol.dto.request.CompanyUpdateRequestDto;
 import com.ensolution.ensol.entity.app.facility.Company;
 import com.ensolution.ensol.mapper.app.facility.CompanyMapper;
 import com.ensolution.ensol.repository.app.jpa.facility.CompanyRepository;
@@ -19,12 +22,12 @@ public class CompanyDataServiceImpl implements CompanyDataService {
   private final CompanyMapper companyMapper;
 
   @Override
-  public Optional<CompanyDto> findCompanyById(Integer id) {
-    return companyRepository.findById(id).map(companyMapper::toDto);
+  public Optional<CompanyDto> getCompanyById(Integer companyId) {
+    return companyRepository.findById(companyId).map(companyMapper::toDto);
   }
 
   @Override
-  public List<CompanyDto> findAll() {
+  public List<CompanyDto> findAllCompanies() {
     List<Company> companies = companyRepository.findAll();
     return companyMapper.toDtoList(companies);
   }
@@ -37,36 +40,25 @@ public class CompanyDataServiceImpl implements CompanyDataService {
 
   @Override
   @Transactional
-  public void updateCompany(CompanyDto companyDto) {
-    Company company = companyRepository.findById(companyDto.getCompanyId())
-        .orElseThrow(() -> new RuntimeException("Company not found"));
-
-    if (companyDto.getCompanyName() != null) {
-      company.setCompanyName(companyDto.getCompanyName());
-    }
-
-    if (companyDto.getAddress() != null) {
-      company.setAddress(companyDto.getAddress());
-    }
-
-    if (companyDto.getBizNumber() != null) {
-      company.setBizNumber(companyDto.getBizNumber());
-    }
-
-    if (companyDto.getCeoName() != null) {
-      company.setCeoName(companyDto.getCeoName());
-    }
+  public void updateCompanyProfile(CompanyUpdateRequestDto requestDto) {
+    Company company = companyRepository.findById(requestDto.getCompanyId())
+        .orElseThrow(() ->
+            new IllegalArgumentException("존재하지 않는 회사 ID: " + requestDto.getCompanyId()));
+    
+    updateIfPresent(requestDto.getCompanyName(), company::setCompanyName);
+    updateIfPresent(requestDto.getAddress(), company::setAddress);
+    updateIfPresent(requestDto.getBizNumber(), company::setBizNumber);
+    updateIfPresent(requestDto.getCeoName(), company::setCeoName);
   }
 
   @Override
   @Transactional
-  public void deleteCompanies(List<Integer> ids) {
-    companyRepository.deleteAllById(ids);
+  public void deleteCompany(Integer companyId) {
+    if (!companyRepository.existsById(companyId)) {
+      throw new IllegalArgumentException("삭제할 회사가 존재하지 않습니다. ID: " + companyId);
+    }
+    companyRepository.deleteById(companyId);
   }
-
-  @Override
-  @Transactional
-  public void deleteCompany(Integer companyId) { companyRepository.deleteById(companyId); }
 
   @Override
   public boolean existsById(Integer id) {
