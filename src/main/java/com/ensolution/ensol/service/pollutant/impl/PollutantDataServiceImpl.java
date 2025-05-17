@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,15 +18,13 @@ public class PollutantDataServiceImpl implements PollutantDataService {
   private final PollutantMapper pollutantMapper;
 
   @Override
-  public PollutantDto findPollutantById(Integer pollutantId) {
-    Pollutant pollutant = pollutantRepository.findById(pollutantId)
-        .orElseThrow(() -> new RuntimeException("pollutant not found"));
-
-    return pollutantMapper.toDto(pollutant);
+  public Optional<PollutantDto> getPollutantById(Integer pollutantId) {
+    return pollutantRepository.findById(pollutantId).map(pollutantMapper::toDto);
   }
 
   @Override
   public List<PollutantDto> findAllPollutants() {
-    return pollutantMapper.toDtoList(pollutantRepository.findAll());
+    List<Pollutant> pollutants = pollutantRepository.findAll();
+    return pollutantMapper.toDtoList(pollutants);
   }
 }

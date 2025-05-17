@@ -1,7 +1,6 @@
 package com.ensolution.ensol.dto.app.entity.schedule;
 import com.ensolution.ensol.common.enums.ScheduleSubStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;

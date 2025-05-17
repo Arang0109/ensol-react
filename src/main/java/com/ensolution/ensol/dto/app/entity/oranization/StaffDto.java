@@ -3,6 +3,7 @@ package com.ensolution.ensol.dto.app.entity.oranization;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

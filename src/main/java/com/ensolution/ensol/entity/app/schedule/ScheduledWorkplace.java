@@ -3,12 +3,15 @@ package com.ensolution.ensol.entity.app.schedule;
 import com.ensolution.ensol.common.enums.MeasurementPurpose;
 import com.ensolution.ensol.common.enums.ScheduleSupStatus;
 import com.ensolution.ensol.entity.app.facility.Workplace;
+import com.ensolution.ensol.entity.app.organization.Staff;
 import com.ensolution.ensol.entity.app.organization.Team;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "scheduled_workplace")
@@ -21,11 +24,11 @@ public class ScheduledWorkplace {
   @Column(name = "scheduled_workplace_id", nullable = false)
   private Integer scheduledWorkplaceId;
   
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name= "workplace_id", nullable = false)
   private Workplace workplace;
   
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "team_id", nullable = false)
   private Team team;
   
@@ -42,6 +45,13 @@ public class ScheduledWorkplace {
   
   @Column(name = "reg_date")
   private LocalDate regDate;
+  
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(
+      name = "scheduled_staff",
+      joinColumns = @JoinColumn(name = "scheduled_workplace_id"),
+      inverseJoinColumns = @JoinColumn(name = "staff_id"))
+  private Set<Staff> staffs = new HashSet<>();
   
   // 초기화 코드 //
   @PrePersist

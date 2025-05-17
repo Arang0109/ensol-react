@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -14,8 +15,8 @@ public class PollutantServiceImpl implements PollutantService {
   private final PollutantDataService pollutantDataService;
 
   @Override
-  public PollutantDto findPollutantById(Integer pollutantId) {
-    return pollutantDataService.findPollutantById(pollutantId);
+  public Optional<PollutantDto> getPollutantById(Integer pollutantId) {
+    return pollutantDataService.getPollutantById(pollutantId);
   }
 
   @Override

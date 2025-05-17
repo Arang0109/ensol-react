@@ -25,7 +25,7 @@ public class DocumentServiceImpl implements DocumentService {
     List<PollutantDto> pollutants = new ArrayList<>();
 
     for (PollutantDto p : pollutantDto) {
-      pollutants.add(pollutantService.findPollutantById(p.getPollutantId()));
+      pollutants.add(pollutantService.getPollutantById(p.getPollutantId()).get());
     }
     
     return pollutants;

@@ -10,25 +10,20 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class StackMeasurementServiceImpl implements StackMeasurementService {
+  
   private final StackMeasurementDataService stackMeasurementDataService;
-
-  @Override
-  public Optional<StackMeasurementDto> findStackMeasurementById(Integer stackMeasurementId) {
-   return stackMeasurementDataService.findStackMeasurementById(stackMeasurementId);
-  }
-
+  
   @Override
   public List<StackMeasurementTableDto> findStackMeasurementsByStackId(Integer stackId) {;
     return stackMeasurementDataService.findStackMeasurementsByStackId(stackId);
   }
 
   @Override
-  public StackMeasurementDto createStackMeasurement(StackMeasurementDto stackMeasurementDto) {
+  public StackMeasurementDto registerStackMeasurement(StackMeasurementDto stackMeasurementDto) {
     try {
       stackMeasurementDataService.saveStackMeasurement(stackMeasurementDto);
     } catch (DuplicateKeyException e) {
@@ -39,7 +34,7 @@ public class StackMeasurementServiceImpl implements StackMeasurementService {
   }
 
   @Override
-  public void removeStackMeasurements(List<Integer> stackMeasurementsIds) {
-    stackMeasurementDataService.removeStackMeasurements(stackMeasurementsIds);
+  public void deleteStackMeasurements(List<Integer> stackMeasurementsIds) {
+    stackMeasurementDataService.deleteStackMeasurements(stackMeasurementsIds);
   }
 }

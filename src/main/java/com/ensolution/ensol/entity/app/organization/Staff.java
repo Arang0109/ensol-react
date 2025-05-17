@@ -1,8 +1,12 @@
 package com.ensolution.ensol.entity.app.organization;
 
+import com.ensolution.ensol.entity.app.schedule.ScheduledWorkplace;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "staff")
@@ -22,4 +26,11 @@ public class Staff {
   
   @Column(name = "measurement_field")
   private String measurementField;
+  
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(
+      name = "scheduled_staff",
+      joinColumns = @JoinColumn(name = "scheduled_staff_id"),
+      inverseJoinColumns = @JoinColumn(name = "scheduled_workplace_id"))
+  private Set<ScheduledWorkplace> scheduledWorkplaces = new HashSet<>();
 }

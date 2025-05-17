@@ -33,11 +33,20 @@ public class ScheduledWorkplaceTableDto {
   private MeasurementPurpose measurementPurpose;
   
   @Schema(description = "종합 상태 (COMPLETED / NONCOMPLETED)")
-  private ScheduleSupStatus supStatus;
+  private ScheduleSupStatus status;
   
   @Schema(description = "측정 팀 ID", example = "2")
   private Integer teamId;
   
   @Schema(description = "측정 팀", example = "2팀")
   private String teamName;
+  
+  @Schema(description = "측정 인력 IDS")
+  private String staffIds;
+  
+  @Schema(description = "측정 인력")
+  private String staffs;
+  
+  @Schema(description = "측정 시설")
+  private String stackNames;
 }

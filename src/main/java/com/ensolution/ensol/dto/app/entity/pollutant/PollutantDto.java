@@ -3,6 +3,7 @@ package com.ensolution.ensol.dto.app.entity.pollutant;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

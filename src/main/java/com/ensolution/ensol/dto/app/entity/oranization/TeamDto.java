@@ -19,6 +19,6 @@ public class TeamDto {
   @Schema(description = "팀 이름", example = "1팀")
   private String teamName;
   
-  private Set<Staff> staffs;
-  private Set<Vehicle> vehicles;
+  private Set<StaffDto> staffs;
+  private Set<VehicleDto> vehicles;
 }

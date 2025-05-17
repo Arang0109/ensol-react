@@ -2,12 +2,14 @@ package com.ensolution.ensol.dto.app.entity.schedule;
 
 import com.ensolution.ensol.common.enums.MeasurementPurpose;
 import com.ensolution.ensol.common.enums.ScheduleSupStatus;
+import com.ensolution.ensol.dto.app.entity.oranization.StaffDto;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.Set;
 
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -34,4 +36,6 @@ public class ScheduledWorkplaceDto {
   
   @Schema(description = "일정 등록일", example = "2025-05-01", accessMode = Schema.AccessMode.READ_ONLY)
   private LocalDate regDate;
+  
+  private Set<StaffDto> staffs;
 }

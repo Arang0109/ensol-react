@@ -1,5 +1,6 @@
 package com.ensolution.ensol.entity.app.facility;
 
+import com.ensolution.ensol.common.enums.CycleType;
 import com.ensolution.ensol.entity.app.pollutant.Pollutant;
 import com.ensolution.ensol.entity.app.schedule.MeasurementSchedule;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -25,7 +26,8 @@ public class StackMeasurement {
   @JoinColumn(name = "pollutant_id", nullable = false)
   private Pollutant pollutant;
   @Column(name = "cycle_type", nullable = false)
-  private String cycleType;
+  @Enumerated(EnumType.STRING)
+  private CycleType cycleType;
   @Column(name = "allow_value")
   private String allowValue;
   @Column(name = "oxygen_concentration")

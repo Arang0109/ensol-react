@@ -2,6 +2,7 @@ package com.ensolution.ensol.dto.app.query.table;
 
 import lombok.*;
 
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -14,8 +15,6 @@ public class StackMeasurementTableDto {
   private String cycleType;
   private Double allowValue;
   private Integer oxygenConcentration;
-  private boolean isCompleted;
-  private boolean isMeasured;
   private String pollutantNameKR;
   private String pollutantNameEN;
   private String pollutantNameHyundai;

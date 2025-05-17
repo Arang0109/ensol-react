@@ -2,20 +2,47 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.ensolution.ensol.repository.app.mybatis.ScheduleTableMapper">
+<mapper namespace="com.ensolution.ensol.repository.app.mybatis.TableInFieldMapper">
+    <select id="stackMeasurementList" parameterType="Integer" resultType="StackMeasurementTableDto">
+        SELECT
+            sm.stack_measurement_id AS stackMeasurementId,
+            sm.stack_id AS stackId,
+            sm.pollutant_id AS pollutantId,
+            sm.cycle_type AS cycleType,
+            sm.allow_value AS allowValue,
+            sm.oxygen_concentration As oxygenConcentration,
+            p.pollutant_name_kr AS pollutantNameKR,
+            p.pollutant_name_en AS pollutantNameEN,
+            p.pollutant_name_hyundai As pollutantNameHyundai,
+            p.method
+        FROM stack_measurement `sm`
+            INNER JOIN pollutant `p` on sm.pollutant_id = p.pollutant_id
+        WHERE sm.stack_id = #{stackId};
+    </select>
+
     <select id="scheduledWorkplaceList" resultType="ScheduledWorkplaceTableDto">
         SELECT
             sw.scheduled_workplace_id,
             sw.measure_date,
             sw.measurement_purpose,
+            sw.status,
             w.workplace_id,
             w.workplace_name,
             w.address,
             t.team_id,
-            t.team_name
+            t.team_name,
+            GROUP_CONCAT(DISTINCT s.staff_id) AS staff_ids,
+            GROUP_CONCAT(DISTINCT s.staff_name) AS staffs,
+            GROUP_CONCAT(DISTINCT stack.stack_name) AS stack_names
         FROM scheduled_workplace sw
-                 LEFT JOIN workplace w ON sw.workplace_id = w.workplace_id
-                 LEFT JOIN team t ON sw.team_id = t.team_id;
+            LEFT JOIN scheduled_stack scs ON sw.scheduled_workplace_id = scs.scheduled_workplace_id
+            LEFT JOIN stack ON scs.stack_id = stack.stack_id
+            LEFT JOIN workplace w ON sw.workplace_id = w.workplace_id
+            LEFT JOIN team t ON sw.team_id = t.team_id
+            LEFT JOIN scheduled_staff ss ON sw.scheduled_workplace_id = ss.scheduled_workplace_id
+            LEFT JOIN staff s ON ss.staff_id = s.staff_id
+        GROUP BY sw.scheduled_workplace_id
+        ORDER BY sw.measure_date ASC;
     </select>
 
     <select id="scheduleStackList" parameterType="Integer" resultType="ScheduledStackTableDto">

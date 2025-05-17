@@ -4,7 +4,7 @@ import com.ensolution.ensol.dto.app.entity.facility.StackMeasurementDto;
 import com.ensolution.ensol.dto.app.query.table.StackMeasurementTableDto;
 import com.ensolution.ensol.entity.app.facility.StackMeasurement;
 import com.ensolution.ensol.mapper.app.facility.StackMeasurementMapper;
-import com.ensolution.ensol.repository.app.mybatis.TableInformationMapper;
+import com.ensolution.ensol.repository.app.mybatis.TableInFieldMapper;
 import com.ensolution.ensol.repository.app.jpa.facility.StackMeasurementRepository;
 import com.ensolution.ensol.common.exception.CustomDKException;
 import com.ensolution.ensol.service.stack.StackMeasurementDataService;
@@ -21,17 +21,11 @@ import java.util.Optional;
 public class StackMeasurementDataServiceImpl implements StackMeasurementDataService {
   private final StackMeasurementMapper stackMeasurementMapper;
   private final StackMeasurementRepository stackMeasurementRepository;
-  private final TableInformationMapper tableInformationMapper;
-
-  @Override
-  public Optional<StackMeasurementDto> findStackMeasurementById(Integer stackMeasurementId) {
-    Optional<StackMeasurement> stackMeasurement = stackMeasurementRepository.findById(stackMeasurementId);
-    return stackMeasurement.map(stackMeasurementMapper::toDto);
-  }
+  private final TableInFieldMapper tableInFieldMapper;
 
   @Override
   public List<StackMeasurementTableDto> findStackMeasurementsByStackId(Integer stackId) {
-    return tableInformationMapper.stackMeasurementsOfStack(stackId);
+    return tableInFieldMapper.stackMeasurementList(stackId);
   }
 
   @Override
@@ -44,7 +38,7 @@ public class StackMeasurementDataServiceImpl implements StackMeasurementDataServ
   }
 
   @Override
-  public void removeStackMeasurements(List<Integer> ids) {
+  public void deleteStackMeasurements(List<Integer> ids) {
     try {
       stackMeasurementRepository.deleteAllById(ids);
     } catch (DataAccessException e) {

@@ -26,22 +26,22 @@ public class ExcelDataUploadService {
   StackMeasurementMapper stackMeasurementMapper;
   StackMeasurementRepository stackMeasurementRepository;
 
-  public void addStackMeasurement(Integer workplaceId, List<ExcelStackMeasurementDto> excelData) {
-    for (ExcelStackMeasurementDto item : excelData) {
-      item.setWorkplace_id(workplaceId);
-
-      StackMeasurementDto stackMeasurementDto = new StackMeasurementDto();
-
-      Optional<Stack> stack = stackRepository.findByStackName(item.getStack_name());
-      Optional<Pollutant> pollutant = pollutantRepository.findByPollutantNameKR(item.getPollutant_name());
-      if (stack.isPresent() && pollutant.isPresent()) {
-        stackMeasurementDto.setStackId(stackMapper.toDto(stack.get()).getStackId());
-        stackMeasurementDto.setPollutantId(pollutantMapper.toDto(pollutant.get()).getPollutantId());
-        stackMeasurementDto.setCycleType(item.getCycle_type());
-        stackMeasurementDto.setAllowValue(item.getAllow_value());
-      }
-      ;
-      stackMeasurementRepository.save(stackMeasurementMapper.toEntity(stackMeasurementDto));
-    }
-  }
+//  public void addStackMeasurement(Integer workplaceId, List<ExcelStackMeasurementDto> excelData) {
+//    for (ExcelStackMeasurementDto item : excelData) {
+//      item.setWorkplace_id(workplaceId);
+//
+//      StackMeasurementDto stackMeasurementDto = new StackMeasurementDto();
+//
+//      Optional<Stack> stack = stackRepository.findByStackName(item.getStack_name());
+//      Optional<Pollutant> pollutant = pollutantRepository.findByPollutantNameKR(item.getPollutant_name());
+//      if (stack.isPresent() && pollutant.isPresent()) {
+//        stackMeasurementDto.setStackId(stackMapper.toDto(stack.get()).getStackId());
+//        stackMeasurementDto.setPollutantId(pollutantMapper.toDto(pollutant.get()).getPollutantId());
+//        stackMeasurementDto.setCycleType(item.getCycle_type());
+//        stackMeasurementDto.setAllowValue(item.getAllow_value());
+//      }
+//      ;
+//      stackMeasurementRepository.save(stackMeasurementMapper.toEntity(stackMeasurementDto));
+//    }
+//  }
 }

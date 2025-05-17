@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -69,6 +70,24 @@ public class WorkplaceController {
     WorkplaceDto register = workplaceService.registerWorkplace(workplaceDto);
     ApiResponseMessage<WorkplaceDto> success = new ApiResponseMessage<>(true, "등록 성공", register);
     return ResponseEntity.status(HttpStatus.CREATED).body(success);
+  }
+  
+  @Operation(summary = "측정대상 사업장 기본정보 조회", description = "측정대상 사업장 정보만 조회합니다.")
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", description = "사업장 조회 성공",
+          content = @Content(schema = @Schema(implementation = ApiResponseMessage.class))),
+      @ApiResponse(responseCode = "404", description = "요청 페이지 없음")
+  })
+  @GetMapping("/{workplaceId}/profile")
+  public ResponseEntity<ApiResponseMessage<WorkplaceDto>> loadWorkplaceProfile(
+      
+      @PathVariable Integer workplaceId
+      
+  ) {
+    WorkplaceDto workplaceProfileData = workplaceService.getWorkplaceById(workplaceId)
+        .orElse(null);
+    
+    return ResponseEntity.ok(new ApiResponseMessage<>(true, "조회 성공", workplaceProfileData));
   }
 
   @Operation(summary = "측정대상 사업장 상세페이지 조회", description = "사업장 ID로 상세 정보를 조회합니다.")

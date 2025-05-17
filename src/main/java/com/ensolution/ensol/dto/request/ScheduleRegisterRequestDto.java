@@ -1,6 +1,7 @@
-package com.ensolution.ensol.dto.app.entity.schedule;
+package com.ensolution.ensol.dto.request;
 
-import com.ensolution.ensol.dto.app.entity.facility.StackMeasurementDto;
+import com.ensolution.ensol.dto.app.entity.schedule.ScheduledStackDto;
+import com.ensolution.ensol.dto.app.entity.schedule.ScheduledWorkplaceDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import lombok.*;
@@ -13,7 +14,7 @@ import java.util.List;
 @Setter
 @ToString
 @Schema(description = "측정 일정 DTO")
-public class CreateScheduleDto {
+public class ScheduleRegisterRequestDto {
   @Schema(description = "일정 정보(사업장)")
   @Valid
   private ScheduledWorkplaceDto scheduledWorkplace;
@@ -22,7 +23,11 @@ public class CreateScheduleDto {
   @Valid
   private ScheduledStackDto scheduledStack;
   
-  @Schema(description = "측정 항목 정보")
+  @Schema(description = "측정 항목 ID List")
   @Valid
-  private List<StackMeasurementDto> stackMeasurements;
+  private List<Integer> stackMeasurementIds; // measuremntSchedule 생성
+  
+  @Schema(description = "측정 인력 ID List")
+  @Valid
+  private List<Integer> staffIds; // scheduledStaff 생성
 }

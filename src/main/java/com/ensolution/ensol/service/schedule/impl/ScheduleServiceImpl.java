@@ -1,8 +1,8 @@
 package com.ensolution.ensol.service.schedule.impl;
 
-import com.ensolution.ensol.dto.app.entity.schedule.CreateScheduleDto;
+import com.ensolution.ensol.dto.request.ScheduleRegisterRequestDto;
 import com.ensolution.ensol.dto.app.query.table.ScheduledWorkplaceTableDto;
-import com.ensolution.ensol.dto.app.query.table.ScheduledStackTableDto;
+import com.ensolution.ensol.dto.response.ScheduledStackResponseDto;
 import com.ensolution.ensol.service.schedule.ScheduleDataService;
 import com.ensolution.ensol.service.schedule.ScheduleService;
 import jakarta.transaction.Transactional;
@@ -22,13 +22,16 @@ public class ScheduleServiceImpl implements ScheduleService {
   }
   
   @Override
-  public List<ScheduledStackTableDto> findSubSchedules(Integer scheduledWorkplaceId) {
-    return scheduleDataService.findScheduleByScheduledWorkplaceId(scheduledWorkplaceId);
+  public ScheduledStackResponseDto findSubSchedules(Integer scheduledWorkplaceId) {
+    return ScheduledStackResponseDto.builder()
+        .scheduledStackTables(scheduleDataService.findScheduleByScheduledWorkplaceId(scheduledWorkplaceId))
+        .scheduledWorkplace(scheduleDataService.getScheduledWorkplaceById(scheduledWorkplaceId))
+        .build();
   }
   
   @Override
   @Transactional
-  public void createSchedule(CreateScheduleDto createSchedule) {
-    scheduleDataService.saveSchedule(createSchedule);
+  public void registerSchedule(ScheduleRegisterRequestDto schedule) {
+    scheduleDataService.saveSchedule(schedule);
   }
 }

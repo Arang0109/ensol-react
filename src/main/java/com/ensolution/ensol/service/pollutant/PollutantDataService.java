@@ -3,9 +3,9 @@ package com.ensolution.ensol.service.pollutant;
 import com.ensolution.ensol.dto.app.entity.pollutant.PollutantDto;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PollutantDataService {
-  PollutantDto findPollutantById(Integer pollutantId);
-  
+  Optional<PollutantDto> getPollutantById(Integer pollutantId);
   List<PollutantDto> findAllPollutants();
 }
