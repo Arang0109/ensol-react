@@ -32,8 +32,6 @@ public class CompanyServiceImpl implements CompanyService {
   @Override
   public CompanyDto registerCompany(CompanyDto companyDto) {
     try {
-      // 1. 등록일 초기화 : 오늘 날짜
-      companyDto.setRegDate(LocalDate.now());
       companyDataService.saveCompany(companyDto);
     } catch (DuplicateKeyException e) {
       throw new CustomDKException("company", "Name", companyDto.getCompanyName(), e);

@@ -1,6 +1,7 @@
 package com.ensolution.ensol.controller;
 
 import com.ensolution.ensol.common.util.ApiResponseMessage;
+import com.ensolution.ensol.common.validator.CompanyValidator;
 import com.ensolution.ensol.dto.request.CompanyUpdateRequestDto;
 import com.ensolution.ensol.dto.response.CompanyDetailResponseDto;
 import com.ensolution.ensol.common.util.ValidationUtils;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +30,12 @@ public class CompanyController {
 
   private final CompanyService companyService;
   private final WorkplaceService workplaceService;
+  private final CompanyValidator companyValidator;
+  
+  @InitBinder
+  public void initBinder(WebDataBinder binder) {
+    binder.addValidators(companyValidator);
+  }
 
   @Operation(
       summary = "측정대행 의뢰업체 목록 조회",

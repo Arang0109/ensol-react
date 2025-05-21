@@ -10,6 +10,8 @@ import java.util.List;
 @Mapper
 public interface TableInFieldMapper {
   List<StackMeasurementTableDto> stackMeasurementList(Integer stackId);
+  
   List<ScheduledWorkplaceTableDto> scheduledWorkplaceList();
+  
   List<ScheduledStackTableDto> scheduleStackList(Integer scheduledWorkplaceId);
 }
